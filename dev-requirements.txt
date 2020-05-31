@@ -1,0 +1,10 @@
+boto3==1.13.19
+Pillow==7.1.2
+flake8==3.8.2
+black==19.10b0
+mypy==0.770
+pytest==5.4.2
+chalice==1.14.1
+pre-commit==2.4.0
+mypy-boto3==1.13.19.0
+invoke==1.4.1
