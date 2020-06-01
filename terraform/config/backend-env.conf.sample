@@ -1,0 +1,6 @@
+# Replace the env in the file name and remove the .sample suffix (i.e. backend-dev.conf, backend-prod.conf)
+bucket  = "your terraform state bucket"
+key     = "terraform.tfstate"
+encrypt = true
+region  = "your aws region"
+dynamodb_table = "your dynamodb table (used for state locking)"

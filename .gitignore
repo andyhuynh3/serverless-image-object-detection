@@ -110,3 +110,9 @@ venv/
 terraform.tfstate*
 dev.tfvars
 prod.tfvars
+tfplan
+backend-dev.conf
+
+# chalice
+.chalice/deployed
+.chalice/deployments
