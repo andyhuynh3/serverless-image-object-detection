@@ -111,8 +111,10 @@ terraform.tfstate*
 dev.tfvars
 prod.tfvars
 tfplan
-backend-dev.conf
+backend-*.conf
 
 # chalice
 .chalice/deployed
 .chalice/deployments
+.chalice/config.json
+.chalice/policy-*
