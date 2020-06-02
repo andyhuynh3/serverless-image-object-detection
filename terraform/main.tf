@@ -59,6 +59,10 @@ resource "local_file" "website_js" {
 data "external" "api_gw_url" {
   program = ["sh", "bin/get_api_gw_url.sh"]
 
+  query = {
+    env = var.env
+  }
+
   depends_on = [
     null_resource.chalice
   ]
