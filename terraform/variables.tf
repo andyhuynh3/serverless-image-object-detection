@@ -91,7 +91,12 @@ variable "s3_output_bucket_force_destroy" {
   description = "Whether or not to force destroy bucket"
 }
 
+variable "website_bucket_name" {
+  type        = string
+  description = "Name of website bucket"
+}
+
 variable "env" {
-    type = string
-    description = "Environment to deploy resources to"
+  type        = string
+  description = "Environment to deploy resources to"
 }

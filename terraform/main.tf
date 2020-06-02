@@ -48,9 +48,67 @@ resource "aws_s3_bucket" "output_bucket" {
   force_destroy = var.s3_output_bucket_force_destroy
 }
 
+resource "local_file" "website_js" {
+  filename = "../ui/script.js"
+  content = format(
+    file("../ui/base-script.js"),
+    "${data.external.api_gw_url.result["api_gw_url"]}"
+  )
+}
+
+data "external" "api_gw_url" {
+  program = ["sh", "bin/get_api_gw_url.sh"]
+
+  depends_on = [
+    null_resource.chalice
+  ]
+}
+
+resource "aws_s3_bucket" "website" {
+  bucket = var.website_bucket_name
+  acl    = "public-read"
+
+  tags = {
+    Name        = "website"
+    Environment = var.env
+  }
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadForGetBucketObjects",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::${var.website_bucket_name}/*"
+    }
+  ]
+}
+EOF
+
+  website {
+    index_document = "index.html"
+    error_document = "error.html"
+  }
+
+  force_destroy = true
+
+  provisioner "local-exec" {
+    command = "aws s3 cp --recursive ../ui s3://${var.website_bucket_name}"
+  }
+
+  depends_on = [
+    local_file.website_js
+  ]
+}
+
 resource "local_file" "chalice_config" {
   filename = "../.chalice/config.json"
-  content  = format(
+  content = format(
     file("../.chalice/base-config.json"),
     var.s3_input_bucket_name,
     var.s3_output_bucket_name,
@@ -63,7 +121,8 @@ resource "local_file" "chalice_config" {
 
 resource "local_file" "chalice_iam_policy" {
   filename = "../.chalice/policy-${var.env}.json"
-  content  = format(file("../.chalice/base-policy.json"),
+  content = format(
+    file("../.chalice/base-policy.json"),
     var.s3_input_bucket_name,
     var.s3_input_bucket_name,
     var.s3_output_bucket_name,
@@ -77,7 +136,7 @@ resource "null_resource" "chalice" {
   provisioner "local-exec" {
     command = "rm -rf ../.chalice/deployed && chalice --project-dir .. deploy --stage ${var.env}"
     environment = {
-      AWS_DEFAULT_REGION = var.aws_region
+      AWS_REGION = var.aws_region
     }
   }
 
