@@ -1,6 +1,6 @@
 "use strict";
 
-const serverUrl = "<api_gateway_url>"
+const serverUrl = "%s"
 
 async function uploadImage() {
     // encode input file as base64 string for upload
@@ -16,7 +16,9 @@ async function uploadImage() {
 
     document.getElementById("file").value = "";
 
-    return fetch(serverUrl + "/upload", {
+    document.getElementById("state").innerHTML = "Processing file..."
+
+    return fetch(serverUrl + "upload", {
         method: "POST",
         headers: {
             'Accept': 'application/json',
@@ -45,13 +47,14 @@ function displayResults(response) {
         const data = predictions[key];
         const color = data['color'];
         const confidence = data['confidence'];
-        const text = key + " (" + confidence + "%)"
+        const text = key + " (" + confidence + "%%)"
         const li = document.createElement('li');
         li.style.color = color;
         li.appendChild(document.createTextNode(text));
         ul.appendChild(li)
     }
     predictionsElem.appendChild(ul);
+    document.getElementById("state").innerHTML = "Processing complete!"
 }
 
 function handler() {
