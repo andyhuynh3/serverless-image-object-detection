@@ -12,3 +12,8 @@ output "dynamodb_table_name" {
   value       = aws_dynamodb_table.image_object_detection_table.id
   description = "Name of DynamoDB table"
 }
+
+output "site_bucket_name" {
+  value       = aws_s3_bucket.website.id
+  description = "Name of S3 static site bucket"
+}
