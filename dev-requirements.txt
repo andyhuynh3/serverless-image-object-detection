@@ -1,5 +1,5 @@
 boto3==1.13.19
-Pillow==7.1.2
+Pillow==8.1.1
 flake8==3.8.2
 black==19.10b0
 mypy==0.770
